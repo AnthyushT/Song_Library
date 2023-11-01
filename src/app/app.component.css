@@ -1,0 +1,11 @@
+.example-spacer {
+    flex: 1 1 auto;
+}
+.btn-group{
+    display: block;
+}
+
+thead{
+    background-color: black;
+    color: white;
+}

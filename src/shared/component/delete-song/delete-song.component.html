@@ -1,0 +1,10 @@
+<h1 mat-dialog-title>Confirm the deletion</h1>
+<div mat-dialog-content>
+    <ol>
+        <li  *ngFor="let song of deletedSongs">{{song.songName}}</li>
+    </ol>
+</div>
+<div mat-dialog-actions>
+  <button class="btn btn-outline-success mx-2" mat-button (click)="onNoClick()">No Thanks</button>
+  <button class="btn btn-outline-danger mx-2" mat-button (click)="deleteSongs()"  cdkFocusInitial>Confirm</button>
+</div>

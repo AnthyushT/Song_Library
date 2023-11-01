@@ -1,0 +1,74 @@
+import { Injectable } from '@angular/core';
+import { songsAlbum } from 'src/assets/songs';
+import { Songs, SongInfo } from 'src/models/songs.model';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class SongService {
+  songsList: Array<Songs> = songsAlbum;
+  constructor() { }
+
+  removeSongs(deleteSongs: Songs[]) {
+    deleteSongs.forEach(song => {
+      let index = this.songsList.findIndex(songObj => songObj.id === song.id)
+      this.songsList.splice(index, 1);
+    })
+  }
+
+  getSortedData(query: { songNameFilter: string, artistNameFilter: string, column: string, order: string }) {
+    if (query.order === 'none') {
+      console.log("none")
+      console.log(this.songsList[0])
+      return this.getFilteredSongs({ songName: query.songNameFilter, artistName: query.artistNameFilter });
+    }
+
+    const sortedSongs = [...this.getFilteredSongs({ songName: query.songNameFilter, artistName: query.artistNameFilter })];
+    return sortedSongs.sort((a, b) => {
+      const isAsc = query.order === 'asc';
+      switch (query.column) {
+        case 'songName':
+          return this.compare(a.songName, b.songName, isAsc);
+        case 'artistName':
+          return this.compare(a.artistName, b.artistName, isAsc);
+        case 'numberOfStreams':
+          return this.compare(a.numberOfStreams, b.numberOfStreams, isAsc);
+        case 'releaseYear':
+          return this.compare(a.releaseYear, b.releaseYear, isAsc);
+        case 'durationInSeconds':
+          return this.compare(a.durationInSeconds, b.durationInSeconds, isAsc);
+        default:
+          return 0;
+      }
+    })
+  }
+
+  getSongs(): Songs[] {
+    return this.songsList;
+  }
+
+  addSong(songInfo: SongInfo) {
+    console.log(songInfo);
+    let song: Songs = {
+      id: (Math.random() * 10000).toString(),
+      songName: songInfo.songName,
+      artistName: songInfo.artistName,
+      numberOfStreams: songInfo.numberOfStreams,
+      releaseYear: songInfo.releaseYear,
+      durationInSeconds: songInfo.durationInSeconds
+    }
+    this.songsList.push(song);
+  }
+
+  getFilteredSongs(query: { songName: string, artistName: string }): Songs[] {
+    return this.songsList.filter((song) => song.songName.toLowerCase().includes(query.songName.toLowerCase()) && song.artistName.toLowerCase().includes(query.artistName.toLowerCase()))
+  }
+
+  //compare function 
+  compare(data_1: number | string, data_2: number | string, isAsc: boolean) {
+    return (data_1 < data_2 ? -1 : 1) * (isAsc ? 1 : -1);
+  }
+
+  
+
+}
